@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Jogo de Carros</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+
+    <!-- Tela inicial -->
+    <div id="start-screen" class="screen active">
+      <h1>🏎️ Qual é o modelo do carro?</h1>
+      <p>Teste seus conhecimentos em 3 fases!</p>
+      <button id="start-btn">Começar</button>
+    </div>
+
+    <!-- Tela do jogo -->
+    <div id="game-screen" class="screen">
+      <h1>🏎️ Qual é o modelo do carro?</h1>
+      <p id="level">Fase: 1</p>
+      <p id="timer">⏱️ Tempo: 60s</p>
+      <p id="score">Pontuação: 0</p>
+      <img id="car-image" src="" alt="Carro" />
+      <div id="options" class="options"></div>
+      <p id="feedback"></p>
+      <button id="next-btn" disabled>Próximo</button>
+    </div>
+
+    <!-- Tela de fim de jogo -->
+    <div id="end-screen" class="screen">
+      <h1>Fim de Jogo!</h1>
+      <p id="final-message"></p>
+      <p id="final-score"></p>
+      <button id="restart-btn">Jogar Novamente</button>
+    </div>
+
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>

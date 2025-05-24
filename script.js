@@ -18,7 +18,7 @@ const cars = [
 
 let currentIndex = 0;
 let score = 0;
-let timeLeft = 120;
+let timeLeft = 60;
 let level = 1;
 let timer;
 let answered = false;
@@ -48,7 +48,7 @@ function startGame() {
   currentIndex = 0;
   score = 0;
   level = 1;
-  timeLeft = 120;
+  timeLeft = 60;
   answered = false;
 
   scoreDisplay.textContent = `Pontuação: ${score}`;
@@ -164,7 +164,7 @@ function nextLevel() {
     endGame("🏁 Você concluiu todas as levels!");
   } else {
     levelDisplay.textContent = `Level: ${level}`;
-    timeLeft = 120;
+    timeLeft = 60;
     startTimer();
     updateCar();
   }

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Quiz de Carros</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+  <div class="container">
+
+    <!-- Tela inicial -->
+    <div id="start-screen" class="screen active">
+      <h1> <i class="fa fa-car"></i></p> Quiz Sobre Carros</h1>
+      <p>Teste seus conhecimentos com carros!</p>
+      <button id="start-btn">Começar</button>
+    </div>
+
+    <!-- Tela do jogo -->
+    <div id="game-screen" class="screen">
+      <h1>🏎️ Qual é o modelo do carro?</h1>
+      <p id="level">Fase: 1</p>
+      <p id="timer">⏱️ Tempo: 120s</p>
+      <p id="score">Pontuação: 0</p>
+      <img id="car-image" src="" alt="Carro" />
+      <div id="options" class="options"></div>
+      <p id="feedback"></p>
+      <button id="next-btn" disabled>Próximo</button>
+      <button id="menu-btn">Voltar ao Menu</button>
+    </div>
+
+    <!-- Tela de fim de jogo -->
+    <div id="end-screen" class="screen">
+      <h1>Fim de Jogo!</h1>
+      <p id="final-message"></p>
+      <p id="final-score"></p>
+      <input type="text" id="player-name" placeholder="Digite seu nome" />
+      <button id="save-score-btn">Salvar Pontuação</button>
+      <h2>🏆 Ranking</h2>
+      <ul id="ranking-list"></ul>
+      <button id="restart-btn">Jogar Novamente</button>
+      <button id="menu-btn">Voltar ao Menu</button>
+    </div>
+  </div>
+
+  <video autoplay muted loop id="background-video-desktop" class="bg-video">
+    <source src="fundo_pc.mp4" type="video/mp4" />
+  </video>
+  
+  <video id="background-video-mobile" autoplay muted loop playsinline>
+    <source src="fundo_cll.mp4" type="video/mp4">
+  </video>
+  
+  <script src="script.js"></script>
+</body>
+</html>
+
+
+<!-- localStorage.clear();  Para limmpar o ranking dos nomes-->

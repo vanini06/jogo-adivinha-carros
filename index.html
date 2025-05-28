@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Quiz Car</title>
+  <title>Quiz de Carros</title>
   <link rel="stylesheet" href="style.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 </head>
 <body>
   <div class="container">
 
     <!-- Tela inicial -->
     <div id="start-screen" class="screen active">
-      <h1> <i class="fa fa-car"></i></p> Quiz Sobre Carros</h1>
+      <h1> <i class="fa fa-car"></i> Quiz Sobre Carros</h1>
       <p>Teste seus conhecimentos com carros!</p>
       <button id="start-btn">Começar</button>
     </div>
@@ -44,17 +44,19 @@
     </div>
   </div>
 
-  <video autoplay muted loop id="background-video-desktop" class="bg-video">
+  <!-- Vídeo fundo desktop -->
+  <video autoplay muted loop id="background-video-desktop" class="bg-video" playsinline>
     <source src="fundo_pc.mp4" type="video/mp4" />
   </video>
-  
-  <video id="background-video-mobile" autoplay muted loop playsinline>
-    <source src="fundo_cll.mp4" type="video/mp4">
+
+  <!-- Vídeo fundo mobile (Android, outros) -->
+  <video id="background-video-mobile" autoplay muted loop playsinline class="bg-video">
+    <source src="fundo_cll.mp4" type="video/mp4" />
   </video>
-  
+
+  <!-- Imagem fallback para iOS -->
+  <img id="background-image-mobile" src="fundo_mobile.jpg" alt="Fundo do site" />
+
   <script src="script.js"></script>
 </body>
 </html>
-
-
-<!-- localStorage.clear();  Para limmpar o ranking dos nomes-->

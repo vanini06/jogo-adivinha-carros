@@ -9,21 +9,26 @@ const cars = [
   { image: "corsa.jpg", model: "Corsa", level: 1 },
   { image: "golf.jpg", model: "Golf", level: 1 },
   { image: "focus.jpg", model: "Focus", level: 1 },
+  { image: "uno.jpg", model: "Uno", level: 1 },
+  { image: "Onix.jpg", model: "Onix", level: 1 },
+  { image: "Sandero.jpg", model: "Sandero", level: 1 },
+  { image: "Prisma.jpg", model: "Prisma", level: 1 },
   { image: "bravo.jpg", model: "Bravo", level: 2 },
   { image: "208.jpg", model: "208", level: 2 },
   { image: "sentra.jpg", model: "Sentra", level: 2 },
   { image: "etios.jpg", model: "Etios", level: 2 },
 ];
 
+let shuffledCarsByLevel = {};
 let currentIndex = 0;
 let score = 0;
-let timeLeft = 120;
+let timeLeft = 60;
 let level = 1;
 let timer;
 let answered = false;
 let selectedOptionIndex = 0;
 
-// Elementos da tela
+// DOM Elements
 const startScreen = document.getElementById("start-screen");
 const gameScreen = document.getElementById("game-screen");
 const endScreen = document.getElementById("end-screen");
@@ -32,7 +37,6 @@ const finalScore = document.getElementById("final-score");
 const startBtn = document.getElementById("start-btn");
 const nextBtn = document.getElementById("next-btn");
 const restartBtn = document.getElementById("restart-btn");
-const menuBtnStart = document.querySelector("#start-screen #menu-btn");
 const menuBtnGame = document.querySelector("#game-screen #menu-btn");
 const menuBtnEnd = document.querySelector("#end-screen #menu-btn");
 
@@ -47,46 +51,25 @@ const playerNameInput = document.getElementById("player-name");
 const saveScoreBtn = document.getElementById("save-score-btn");
 const rankingList = document.getElementById("ranking-list");
 
-// Função para normalizar texto (remove acentos e caracteres especiais)
 function normalizeText(text) {
   return text
     .toLowerCase()
-    .normalize("NFD") // separa acentos
-    .replace(/[\u0300-\u036f]/g, "") // remove acentos
-    .replace(/[^a-z0-9 ]/g, ""); // remove caracteres não alfanuméricos, exceto espaço
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9 ]/g, "");
 }
 
-// Função para validar nome do jogador e impedir derivação de palavras proibidas
 function validatePlayerName(name) {
-  const bannedWords = [
-    "puta", "filho da puta", "caralho", "merda", "bosta", "viado", "piranha", "cacete",
-    "fodase", "cu", "porra", "buceta", "foda", "otario", "babaca", "cuzao", "arrombado", "bicha", "corno",
-    "vagabundo", "escroto", "retardado", "burro", "merdinha", "idiota", "chupa", "pau no cu", "seu cu",
-    "filho da mae", "puto", "abestado", "animal", "lixo", "canalha", "estrume", "jumento", "imbecil",
-    "palhaco", "rato", "macaco", "otario", "maldito", "cretino", "doente", "inutil", "merda seca",
-    "nojento", "pilantra", "safado", "bastardo", "desgracado"
-  ]; // palavras já normalizadas sem acento
-
+  const bannedWords = [/* lista de palavras proibidas */];
   const maxLength = 15;
-
   const sanitized = normalizeText(name);
-
-  if (sanitized.length === 0) return false; // vazio após limpeza
-  if (sanitized.length > maxLength) return false;
-
-  // Verifica se algum termo proibido aparece como substring
+  if (sanitized.length === 0 || sanitized.length > maxLength) return false;
   for (const word of bannedWords) {
-    // cria regex para buscar a palavra proibida como substring
-    // usando word boundary \b não funciona para substrings, então só .includes já bloqueia derivações
-    if (sanitized.includes(word)) {
-      return false;
-    }
+    if (sanitized.includes(word)) return false;
   }
-
-  return name.trim(); // retorna o nome original sem alterar capitalização
+  return name.trim();
 }
 
-// Eventos
 startBtn.addEventListener("click", startGame);
 nextBtn.addEventListener("click", nextCar);
 restartBtn.addEventListener("click", restartGame);
@@ -95,17 +78,11 @@ menuBtnEnd.addEventListener("click", returnToMenu);
 
 saveScoreBtn.addEventListener("click", () => {
   const rawName = playerNameInput.value.trim();
-  if (rawName === "") {
-    alert("Por favor, digite seu nome antes de salvar a pontuação.");
-    return;
-  }
-
   const validName = validatePlayerName(rawName);
   if (!validName) {
     alert("Nome inválido ou não permitido!");
     return;
   }
-
   saveScore(validName, score);
   mostrarRanking();
   saveScoreBtn.disabled = true;
@@ -116,8 +93,16 @@ function startGame() {
   currentIndex = 0;
   score = 0;
   level = 1;
-  timeLeft = 120;
+  timeLeft = 60;
   answered = false;
+
+  // Embaralha os carros por nível
+  shuffledCarsByLevel = {};
+  const levels = [...new Set(cars.map(c => c.level))];
+  for (const lvl of levels) {
+    shuffledCarsByLevel[lvl] = [...cars.filter(c => c.level === lvl)];
+    shuffleArray(shuffledCarsByLevel[lvl]);
+  }
 
   scoreDisplay.textContent = `Pontuação: ${score}`;
   levelDisplay.textContent = `Fase: ${level}`;
@@ -137,8 +122,6 @@ function startGame() {
 
 function startTimer() {
   clearInterval(timer);
-  timerDisplay.textContent = `⏱️ Tempo: ${timeLeft}s`;
-
   timer = setInterval(() => {
     timeLeft--;
     timerDisplay.textContent = `⏱️ Tempo: ${timeLeft}s`;
@@ -150,9 +133,9 @@ function startTimer() {
 }
 
 function updateCar() {
-  const carsByLevel = cars.filter(car => car.level === level);
-  if (carsByLevel.length === 0) {
-    endGame("🚫 Sem carros disponíveis neste nível.");
+  const carsByLevel = shuffledCarsByLevel[level];
+  if (!carsByLevel || carsByLevel.length === 0) {
+    endGame("🚫 Sem carros neste nível.");
     return;
   }
 
@@ -180,10 +163,11 @@ function generateOptions(correctModel) {
     "Corsa", "Kwid", "Uno", "Palio", "Siena", "Prisma",
     "Logan", "Sandero", "HB20", "Onix", "Fox", "Voyage",
     "Up", "Etios", "Classic", "Clio", "Agile", "Bravo",
-    "207", "208", "Monza"
+    "207", "208", "Monza", "Uno", "Prisma", "Sandero",
+    "Onix",
   ];
 
-  const wrongModels = popularModels.filter(model => model !== correctModel);
+  const wrongModels = popularModels.filter(m => m !== correctModel);
   shuffleArray(wrongModels);
   const options = [correctModel, ...wrongModels.slice(0, 3)];
   shuffleArray(options);
@@ -228,13 +212,12 @@ function nextCar() {
 function nextLevel() {
   level++;
   currentIndex = 0;
-
-  const nextCars = cars.filter(car => car.level === level);
-  if (nextCars.length === 0 || level > 3) {
+  const nextCars = shuffledCarsByLevel[level];
+  if (!nextCars || level > 3) {
     endGame("🏁 Você concluiu todas as fases!");
   } else {
     levelDisplay.textContent = `Fase: ${level}`;
-    timeLeft = 120;
+    timeLeft = 60;
     startTimer();
     updateCar();
   }
@@ -250,7 +233,6 @@ function endGame(message) {
   finalMessage.textContent = message;
   finalScore.textContent = `🔝 Pontuação final: ${score}`;
 
-  // Limpa input e botão para novo uso
   playerNameInput.value = "";
   playerNameInput.disabled = false;
   saveScoreBtn.disabled = false;
@@ -282,8 +264,8 @@ function returnToMenu() {
 
 function updateOptionHighlight() {
   const buttons = optionsDiv.querySelectorAll("button");
-  buttons.forEach((btn, index) => {
-    if (index === selectedOptionIndex) {
+  buttons.forEach((btn, i) => {
+    if (i === selectedOptionIndex) {
       btn.style.backgroundColor = "#27ae60";
       btn.style.outline = "2px solid #fff";
     } else {
@@ -295,50 +277,22 @@ function updateOptionHighlight() {
 
 document.addEventListener("keydown", (event) => {
   const buttons = optionsDiv.querySelectorAll("button");
-
-  if (event.key === "Escape") {
-    returnToMenu();
-    return;
-  }
-
+  if (event.key === "Escape") returnToMenu();
   if (event.key === "Enter") {
-    if (startScreen.classList.contains("active")) {
-      startGame();
-      return;
-    }
-
-    if (endScreen.classList.contains("active")) {
-      restartGame();
-      return;
-    }
-
-    if (gameScreen.classList.contains("active") && answered && !nextBtn.disabled) {
-      nextCar();
-      return;
-    }
-
-    if (gameScreen.classList.contains("active") && !answered) {
-      buttons[selectedOptionIndex].click();
-      return;
-    }
+    if (startScreen.classList.contains("active")) return startGame();
+    if (endScreen.classList.contains("active")) return restartGame();
+    if (gameScreen.classList.contains("active") && answered && !nextBtn.disabled) return nextCar();
+    if (gameScreen.classList.contains("active") && !answered) return buttons[selectedOptionIndex].click();
   }
-
-  if (event.key === "ArrowUp") {
+  if (["ArrowUp", "ArrowDown"].includes(event.key)) {
     if (gameScreen.classList.contains("active") && !answered) {
-      selectedOptionIndex = (selectedOptionIndex - 1 + buttons.length) % buttons.length;
-      updateOptionHighlight();
-    }
-  }
-
-  if (event.key === "ArrowDown") {
-    if (gameScreen.classList.contains("active") && !answered) {
-      selectedOptionIndex = (selectedOptionIndex + 1) % buttons.length;
+      if (event.key === "ArrowUp") selectedOptionIndex = (selectedOptionIndex - 1 + buttons.length) % buttons.length;
+      if (event.key === "ArrowDown") selectedOptionIndex = (selectedOptionIndex + 1) % buttons.length;
       updateOptionHighlight();
     }
   }
 });
 
-// Ranking localStorage
 function saveScore(name, score) {
   const scores = JSON.parse(localStorage.getItem("carGuessScores")) || [];
   scores.push({ name, score });
@@ -353,7 +307,6 @@ function mostrarRanking() {
     rankingList.innerHTML = "<li>Nenhuma pontuação salva.</li>";
     return;
   }
-
   scores.slice(0, 5).forEach((entry, index) => {
     const li = document.createElement("li");
     li.textContent = `${index + 1}º - ${entry.name}: ${entry.score} pontos`;
@@ -361,5 +314,5 @@ function mostrarRanking() {
   });
 }
 
-// Inicializa com o menu ativo
+// Começa com tela inicial
 restartGame();

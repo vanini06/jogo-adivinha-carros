@@ -19,7 +19,7 @@ const cars = [
   { image: "208.jpg", model: "208", level: 2 },
   { image: "sentra.jpg", model: "Sentra", level: 2 },
   { image: "etios.jpg", model: "Etios", level: 2 },
-  { image: "vai.jpg", model: "Vai", level: 3 },
+  /*{ image: "vai.jpg", model: "Vai", level: 3 },*/
 
 ];
 

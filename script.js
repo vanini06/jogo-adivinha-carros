@@ -19,12 +19,14 @@ const cars = [
   { image: "208.jpg", model: "208", level: 2 },
   { image: "sentra.jpg", model: "Sentra", level: 2 },
   { image: "etios.jpg", model: "Etios", level: 2 },
+  { image: "vai.jpg", model: "Vai", level: 3 },
+
 ];
 
 let shuffledCarsByLevel = {};
 let currentIndex = 0;
 let score = 0;
-let timeLeft = 60;
+let timeLeft = 80;
 let level = 1;
 let timer;
 let answered = false;
@@ -95,7 +97,7 @@ function startGame() {
   currentIndex = 0;
   score = 0;
   level = 1;
-  timeLeft = 60;
+  timeLeft = 80;
   answered = false;
 
   // Embaralha os carros por nível
@@ -219,7 +221,7 @@ function nextLevel() {
     endGame("🏁 Você concluiu todas as fases!");
   } else {
     levelDisplay.textContent = `Fase: ${level}`;
-    timeLeft = 60;
+    timeLeft = 80;
     startTimer();
     updateCar();
   }
@@ -318,13 +320,3 @@ function mostrarRanking() {
 
 // Começa com tela inicial
 restartGame();
-
-function isIOS() {
-  return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-}
-
-// Exemplo: usar a função para fazer algo exclusivo para iOS
-if (isIOS()) {
-  console.log("Usuário está em iOS");
-  // aqui você pode fazer algo específico para iOS, se precisar
-}
